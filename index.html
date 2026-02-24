@@ -5,7 +5,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>$MOUSE — The Smallest Hunter on Solana</title>
-<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --cheese: #f9c23c;
@@ -20,15 +19,22 @@
     --white: #fff;
     --muted: #7a6fa0;
     --card: #1a1530;
+    /* System font stacks — no internet needed */
+    --font-display: 'Segoe UI Black', 'Arial Black', Impact, sans-serif;
+    --font-body: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-mono: 'Consolas', 'Courier New', monospace;
   }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
+/* Hard-coded fallback so background ALWAYS shows even if CSS vars fail */
+html, body { background-color: #0e0b1a; }
+
 body {
 background: var(–bg);
 color: var(–white);
-font-family: ‘Nunito’, sans-serif;
+font-family: var(–font-body);
 overflow-x: hidden;
 }
 
@@ -70,7 +76,7 @@ border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 .nav-logo {
-font-family: ‘Lilita One’, sans-serif;
+font-family: var(–font-display);
 font-size: 1.8rem;
 color: var(–cheese);
 letter-spacing: 1px;
@@ -168,7 +174,7 @@ filter: drop-shadow(0 20px 40px rgba(249,194,60,0.3));
 }
 
 .hero-title {
-font-family: ‘Lilita One’, sans-serif;
+font-family: var(–font-display);
 font-size: clamp(4rem, 10vw, 8rem);
 line-height: 1;
 color: var(–cheese);
@@ -203,7 +209,7 @@ align-items: center;
 gap: 0.5rem;
 padding: 0.9rem 2.2rem;
 border-radius: 50px;
-font-family: ‘Nunito’, sans-serif;
+font-family: var(–font-body);
 font-size: 1rem;
 font-weight: 900;
 text-decoration: none;
@@ -249,7 +255,7 @@ justify-content: center;
 }
 
 .ca-label {
-font-family: ‘Space Mono’, monospace;
+font-family: var(–font-mono);
 font-size: 0.65rem;
 letter-spacing: 3px;
 color: var(–cheese);
@@ -257,7 +263,7 @@ text-transform: uppercase;
 }
 
 .ca-text {
-font-family: ‘Space Mono’, monospace;
+font-family: var(–font-mono);
 font-size: 0.72rem;
 color: rgba(255,255,255,0.6);
 word-break: break-all;
@@ -272,7 +278,7 @@ border: 1px solid rgba(249,194,60,0.3);
 color: var(–cheese);
 padding: 0.3rem 0.9rem;
 border-radius: 8px;
-font-family: ‘Space Mono’, monospace;
+font-family: var(–font-mono);
 font-size: 0.65rem;
 letter-spacing: 1px;
 cursor: pointer;
@@ -297,7 +303,7 @@ white-space: nowrap;
 }
 
 .marquee-item {
-font-family: ‘Lilita One’, sans-serif;
+font-family: var(–font-display);
 font-size: 1rem;
 letter-spacing: 2px;
 color: rgba(255,255,255,0.9);
@@ -317,9 +323,7 @@ z-index: 1;
 
 .section-tag {
 display: inline-block;
-font-family: ‘Space Mono’, monospace;
-font-size: 0.65rem;
-letter-spacing: 4px;
+font-family: var(–font-mono);
 color: var(–purpleLight);
 text-transform: uppercase;
 margin-bottom: 1rem;
@@ -328,7 +332,7 @@ padding-left: 0.8rem;
 }
 
 .section-title {
-font-family: ‘Lilita One’, sans-serif;
+font-family: var(–font-display);
 font-size: clamp(2.5rem, 5vw, 4rem);
 line-height: 1.1;
 margin-bottom: 1.5rem;
@@ -359,7 +363,7 @@ box-shadow: 0 12px 40px rgba(249,194,60,0.1);
 
 .card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
 .card-title {
-font-family: ‘Lilita One’, sans-serif;
+font-family: var(–font-display);
 font-size: 1.4rem;
 color: var(–cheese);
 margin-bottom: 0.7rem;
@@ -419,7 +423,7 @@ letter-spacing: 1px;
 }
 
 .token-val {
-font-family: ‘Space Mono’, monospace;
+font-family: var(–font-mono);
 font-size: 0.9rem;
 color: var(–cheese);
 font-weight: 700;
@@ -444,7 +448,7 @@ font-weight: 700;
 }
 
 .dist-name { color: var(–white); }
-.dist-pct { color: var(–cheese); font-family: ‘Space Mono’, monospace; }
+.dist-pct { color: var(–cheese); font-family: var(–font-mono); }
 
 .dist-bar-bg {
 height: 8px;
@@ -500,7 +504,7 @@ background: linear-gradient(135deg, var(–purple), #a855f7);
 display: flex;
 align-items: center;
 justify-content: center;
-font-family: ‘Lilita One’, sans-serif;
+font-family: var(–font-display);
 font-size: 1.4rem;
 color: #fff;
 margin: 0 auto 1.2rem;
@@ -508,7 +512,7 @@ box-shadow: 0 4px 20px rgba(108,63,197,0.4);
 }
 
 .step-title {
-font-family: ‘Lilita One’, sans-serif;
+font-family: var(–font-display);
 font-size: 1.2rem;
 color: var(–cheese);
 margin-bottom: 0.7rem;
@@ -544,7 +548,7 @@ animation: float 5s ease-in-out infinite;
 }
 
 .moonshot-banner h3 {
-font-family: ‘Lilita One’, sans-serif;
+font-family: var(–font-display);
 font-size: 2rem;
 color: var(–cheese);
 margin-bottom: 0.7rem;
@@ -611,14 +615,14 @@ z-index: 1;
 }
 
 .footer-logo {
-font-family: ‘Lilita One’, sans-serif;
+font-family: var(–font-display);
 font-size: 2rem;
 color: var(–cheese);
 margin-bottom: 1rem;
 }
 
 .footer-disclaimer {
-font-family: ‘Space Mono’, monospace;
+font-family: var(–font-mono);
 font-size: 0.6rem;
 color: rgba(255,255,255,0.2);
 max-width: 600px;
@@ -825,7 +829,7 @@ nav { padding: 1rem 1.5rem; }
 
 <div>
   <p class="section-tag">// Distribution</p>
-  <h3 style="font-family:'Lilita One',sans-serif; font-size:2rem; margin:1rem 0 2rem; color:var(--cheese);">Where the<br>cheese goes 🧀</h3>
+  <h3 style="font-family:var(--font-display); font-size:2rem; margin:1rem 0 2rem; color:var(--cheese);">Where the<br>cheese goes 🧀</h3>
 
   <div class="dist-wrap">
     <div class="dist-item">
@@ -902,13 +906,13 @@ nav { padding: 1rem 1.5rem; }
 
 <section class="community-section" id="community">
   <p class="section-tag">// 004 — Community</p>
-  <h2 class="section-title" style="font-family:'Lilita One',sans-serif; font-size:clamp(2.5rem,5vw,4rem);">Join the<br><span style="color:var(--cheese);">Mouse Gang 🐭</span></h2>
+  <h2 class="section-title" style="font-family:var(--font-display); font-size:clamp(2.5rem,5vw,4rem);">Join the<br><span style="color:var(--cheese);">Mouse Gang 🐭</span></h2>
   <p style="color:var(--muted); font-size:1rem; font-weight:600; max-width:400px; margin:0 auto;">
     The cheese is better when shared. Join the community and be part of something big.
   </p>
 
   <div class="community-links">
-    <a href="https://t.me/c/3429919451/90" target="_blank" class="community-card">
+    <a href="https://t.me/+WKsBqbbkEeEwZGRh" target="_blank" class="community-card">
       <span class="community-icon">✈️</span> Telegram
     </a>
     <a href="https://moonshot.com/5akP3jinnufMVoWWjUfiwm2BinjycYkivbGQnNLNmoon?ref=S5bDQf" target="_blank" class="community-card">
