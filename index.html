@@ -4,860 +4,934 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>$MOUSE — The Smallest Hunter on Solana</title>
+<title>$MOUSE — To The Moon 🌕</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&family=Black+Han+Sans&display=swap" rel="stylesheet">
+
 <style>
-  :root {
-    --cheese: #f9c23c;
-    --cheeseDark: #e0a800;
-    --moon: #f0e6c8;
-    --moonGlow: #fff8e7;
-    --bg: #0e0b1a;
-    --bg2: #130f22;
-    --purple: #6c3fc5;
-    --purpleLight: #9b6dff;
-    --pink: #ff6eb4;
-    --white: #fff;
-    --muted: #7a6fa0;
-    --card: #1a1530;
-    /* System font stacks — no internet needed */
-    --font-display: 'Segoe UI Black', 'Arial Black', Impact, sans-serif;
-    --font-body: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    --font-mono: 'Consolas', 'Courier New', monospace;
-  }
+:root {
+  --yellow:   #F5D000;
+  --yellow2:  #FF9900;
+  --orange:   #FF5C00;
+  --pink:     #FF2879;
+  --cyan:     #00FFD1;
+  --bg:       #07070A;
+  --bg2:      #0D0D14;
+  --card:     rgba(255,255,255,0.04);
+  --border:   rgba(245,208,0,0.22);
+  --text:     #EEEEFF;
+  --muted:    rgba(238,238,255,0.45);
+}
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
-/* Hard-coded fallback so background ALWAYS shows even if CSS vars fail */
-html, body { background-color: #0e0b1a; }
-
 body {
-background: var(–bg);
-color: var(–white);
-font-family: var(–font-body);
-overflow-x: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  overflow-x: hidden;
+  min-height: 100vh;
 }
 
-/* Starfield */
-.stars {
-position: fixed;
-inset: 0;
-pointer-events: none;
-z-index: 0;
-background:
-radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
-radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
-radial-gradient(1.5px 1.5px at 40% 10%, rgba(255,255,255,0.7) 0%, transparent 100%),
-radial-gradient(1px 1px at 55% 60%, rgba(255,255,255,0.5) 0%, transparent 100%),
-radial-gradient(1px 1px at 70% 25%, rgba(255,255,255,0.3) 0%, transparent 100%),
-radial-gradient(1.5px 1.5px at 80% 70%, rgba(255,255,255,0.6) 0%, transparent 100%),
-radial-gradient(1px 1px at 90% 45%, rgba(255,255,255,0.4) 0%, transparent 100%),
-radial-gradient(1px 1px at 15% 75%, rgba(255,255,255,0.5) 0%, transparent 100%),
-radial-gradient(1px 1px at 60% 85%, rgba(255,255,255,0.3) 0%, transparent 100%),
-radial-gradient(1px 1px at 35% 55%, rgba(255,255,255,0.5) 0%, transparent 100%),
-radial-gradient(1px 1px at 5% 50%, rgba(255,255,255,0.4) 0%, transparent 100%),
-radial-gradient(1px 1px at 95% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
-radial-gradient(1.5px 1.5px at 48% 35%, rgba(255,255,255,0.5) 0%, transparent 100%),
-radial-gradient(1px 1px at 72% 88%, rgba(255,255,255,0.4) 0%, transparent 100%);
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; font-family: inherit; }
+
+/* STARFIELD */
+#starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 
-/* NAV */
-nav {
-position: fixed;
-top: 0; left: 0; right: 0;
-z-index: 200;
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 1rem 3rem;
-background: rgba(14,11,26,0.85);
-backdrop-filter: blur(16px);
-border-bottom: 1px solid rgba(255,255,255,0.06);
+/* AMBIENT GLOW */
+.amb {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+}
+.amb-1 { background: radial-gradient(ellipse 60% 40% at 82% 8%, rgba(245,208,0,0.07) 0%, transparent 70%); }
+.amb-2 { background: radial-gradient(ellipse 50% 35% at 12% 85%, rgba(0,255,209,0.05) 0%, transparent 70%); }
+
+/* SCANLINES */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.055) 3px, rgba(0,0,0,0.055) 4px);
+  pointer-events: none;
+  z-index: 9999;
 }
 
-.nav-logo {
-font-family: var(–font-display);
-font-size: 1.8rem;
-color: var(–cheese);
-letter-spacing: 1px;
-display: flex;
-align-items: center;
-gap: 0.5rem;
+/* ===== DESKTOP NAV ===== */
+.desktop-nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 44px;
+  height: 64px;
+  background: rgba(7,7,10,0.85);
+  backdrop-filter: blur(18px) saturate(1.3);
+  border-bottom: 1px solid var(--border);
 }
 
-.nav-logo .mouse-icon { font-size: 1.4rem; }
+.nav-brand {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 15px;
+  color: var(--yellow);
+  text-shadow: 0 0 14px rgba(245,208,0,0.65), 2px 2px 0 var(--orange);
+  letter-spacing: 2px;
+  animation: flicker 9s infinite;
+}
 
 .nav-links {
-display: flex;
-align-items: center;
-gap: 2rem;
-list-style: none;
+  display: flex;
+  gap: 2px;
+  list-style: none;
 }
-
 .nav-links a {
-color: rgba(255,255,255,0.7);
-text-decoration: none;
-font-size: 0.95rem;
-font-weight: 700;
-letter-spacing: 1px;
-text-transform: uppercase;
-transition: color 0.2s;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: var(--muted);
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.2s;
 }
-.nav-links a:hover { color: var(–cheese); }
-
-.nav-btn {
-background: linear-gradient(135deg, var(–cheese), var(–cheeseDark));
-color: #1a1200 !important;
-padding: 0.55rem 1.4rem;
-border-radius: 50px;
-font-weight: 900 !important;
-transition: transform 0.2s, box-shadow 0.2s !important;
-box-shadow: 0 4px 20px rgba(249,194,60,0.3);
-}
-.nav-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(249,194,60,0.5); }
-
-/* HERO */
-.hero {
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-text-align: center;
-padding: 7rem 2rem 4rem;
-position: relative;
-z-index: 1;
+.nav-links a:hover {
+  color: var(--yellow);
+  border-color: rgba(245,208,0,0.35);
+  text-shadow: 0 0 8px var(--yellow);
 }
 
-/* Big moon background */
-.moon-bg {
-position: absolute;
-width: 600px;
-height: 600px;
-border-radius: 50%;
-background: radial-gradient(circle at 35% 35%, #fff9e6, #f0dfa0 40%, #c8a840 70%, #8b6914 100%);
-opacity: 0.07;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -52%);
-pointer-events: none;
-filter: blur(2px);
+.nav-cta {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  background: var(--yellow);
+  color: #000;
+  border: none;
+  padding: 11px 18px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow: 3px 3px 0 var(--orange);
+  transition: all 0.15s;
+  display: inline-block;
+}
+.nav-cta:hover { transform: translate(-1px,-1px); box-shadow: 5px 5px 0 var(--orange); }
+.nav-cta:active { transform: translate(3px,3px); box-shadow: none; }
+
+/* ===== MOBILE NAV ===== */
+.mobile-nav {
+  display: none;
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 500;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  height: 52px;
+  background: rgba(7,7,10,0.92);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+.mob-brand {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  color: var(--yellow);
+  text-shadow: 0 0 10px rgba(245,208,0,0.6), 2px 2px 0 var(--orange);
+}
+.mob-tg-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  background: #229ED9;
+  color: #fff;
+  border: none;
+  padding: 9px 12px;
+  letter-spacing: 1px;
+  box-shadow: 2px 2px 0 #1670a0;
+  display: inline-block;
 }
 
-.hero-badge {
-display: inline-flex;
-align-items: center;
-gap: 0.5rem;
-background: rgba(108,63,197,0.25);
-border: 1px solid rgba(155,109,255,0.4);
-border-radius: 50px;
-padding: 0.4rem 1.2rem;
-font-size: 0.8rem;
-font-weight: 700;
-letter-spacing: 2px;
-text-transform: uppercase;
-color: var(–purpleLight);
-margin-bottom: 2rem;
-animation: fadeUp 0.7s ease both;
+/* CONTENT */
+.content { position: relative; z-index: 10; }
+
+/* ===== DESKTOP HERO ===== */
+.desktop-hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 80px 72px 60px;
+  gap: 40px;
 }
 
-.moonshot-logo-inline {
-font-size: 1rem;
-}
+.hero-left { display: flex; flex-direction: column; gap: 22px; }
 
-.hero-mouse {
-font-size: clamp(5rem, 15vw, 9rem);
-line-height: 1;
-margin-bottom: 0.5rem;
-animation: float 4s ease-in-out infinite;
-filter: drop-shadow(0 20px 40px rgba(249,194,60,0.3));
+.hero-eyebrow {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  color: var(--cyan);
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px var(--cyan);
+  animation: fadeUp 0.8s ease both;
 }
 
 .hero-title {
-font-family: var(–font-display);
-font-size: clamp(4rem, 10vw, 8rem);
-line-height: 1;
-color: var(–cheese);
-text-shadow: 0 0 60px rgba(249,194,60,0.4), 0 4px 0 rgba(0,0,0,0.3);
-animation: fadeUp 0.7s 0.1s ease both;
-margin-bottom: 1rem;
+  font-family: 'Black Han Sans', sans-serif;
+  font-size: clamp(68px, 8.5vw, 128px);
+  color: var(--yellow);
+  line-height: 0.88;
+  text-shadow: 6px 6px 0 var(--orange), 14px 14px 0 rgba(255,92,0,0.25), 0 0 60px rgba(245,208,0,0.45);
+  animation: fadeUp 0.9s ease 0.1s both;
 }
 
 .hero-sub {
-font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-font-weight: 700;
-color: var(–muted);
-letter-spacing: 1px;
-animation: fadeUp 0.7s 0.2s ease both;
-margin-bottom: 2.5rem;
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(9px, 1vw, 14px);
+  color: var(--pink);
+  letter-spacing: 3px;
+  text-shadow: 0 0 12px var(--pink);
+  text-transform: uppercase;
+  animation: fadeUp 1s ease 0.2s both;
 }
 
-.hero-sub span { color: var(–purpleLight); }
+.hero-desc {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(14px, 1.2vw, 18px);
+  color: var(--muted);
+  line-height: 1.75;
+  max-width: 500px;
+  animation: fadeUp 1s ease 0.3s both;
+}
+.hero-desc strong { color: var(--yellow); }
+.hero-desc em { color: var(--cyan); font-style: normal; }
 
-.hero-buttons {
-display: flex;
-gap: 1rem;
-justify-content: center;
-flex-wrap: wrap;
-animation: fadeUp 0.7s 0.3s ease both;
-margin-bottom: 3rem;
+.ca-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(245,208,0,0.05);
+  border: 1px solid rgba(245,208,0,0.28);
+  padding: 14px 18px;
+  flex-wrap: wrap;
+  animation: fadeUp 1s ease 0.4s both;
+}
+.ca-lbl {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: var(--yellow);
+  letter-spacing: 2px;
+  white-space: nowrap;
+}
+.ca-addr-txt {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--cyan);
+  flex: 1;
+  word-break: break-all;
+  min-width: 0;
+}
+.copy-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  background: var(--yellow);
+  color: #000;
+  border: none;
+  padding: 7px 12px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  box-shadow: 2px 2px 0 var(--orange);
+  transition: all 0.15s;
+  text-transform: uppercase;
+}
+.copy-btn:hover { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 var(--orange); }
+.copy-btn:active { transform: translate(2px,2px); box-shadow: none; }
+.copy-btn.ok { background: var(--cyan); }
+
+.hero-btns {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  animation: fadeUp 1s ease 0.5s both;
 }
 
 .btn {
-display: inline-flex;
-align-items: center;
-gap: 0.5rem;
-padding: 0.9rem 2.2rem;
-border-radius: 50px;
-font-family: var(–font-body);
-font-size: 1rem;
-font-weight: 900;
-text-decoration: none;
-letter-spacing: 0.5px;
-transition: all 0.25s;
-cursor: pointer;
-border: none;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  padding: 13px 20px;
+  border: none;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s;
+  white-space: nowrap;
 }
-
 .btn-moon {
-background: linear-gradient(135deg, #7c4dff, #a855f7);
-color: #fff;
-box-shadow: 0 6px 24px rgba(124,77,255,0.4);
+  background: var(--yellow);
+  color: #000;
+  box-shadow: 4px 4px 0 var(--orange), 8px 8px 0 rgba(255,92,0,0.25);
 }
-.btn-moon:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(124,77,255,0.6); }
+.btn-moon:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--orange), 10px 10px 0 rgba(255,92,0,0.25); }
+.btn-moon:active { transform: translate(4px,4px); box-shadow: none; }
 
-.btn-gold {
-background: linear-gradient(135deg, var(–cheese), var(–cheeseDark));
-color: #1a1200;
-box-shadow: 0 6px 24px rgba(249,194,60,0.35);
-}
-.btn-gold:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(249,194,60,0.55); }
+.btn-tg { background: #229ED9; color: #fff; box-shadow: 4px 4px 0 #1a6fa0; }
+.btn-tg:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #1a6fa0; }
+.btn-tg:active { transform: translate(4px,4px); box-shadow: none; }
 
 .btn-outline {
-background: transparent;
-color: var(–white);
-border: 2px solid rgba(255,255,255,0.2);
+  background: transparent;
+  color: var(--cyan);
+  border: 1px solid var(--cyan);
+  box-shadow: 4px 4px 0 rgba(0,255,209,0.22);
 }
-.btn-outline:hover { border-color: var(–cheese); color: var(–cheese); }
+.btn-outline:hover { background: var(--cyan); color: #000; transform: translate(-2px,-2px); }
 
-/* CA box */
-.ca-box {
-display: inline-flex;
-align-items: center;
-gap: 1rem;
-background: rgba(255,255,255,0.05);
-border: 1px solid rgba(255,255,255,0.1);
-border-radius: 16px;
-padding: 1rem 1.5rem;
-animation: fadeUp 0.7s 0.4s ease both;
-flex-wrap: wrap;
-justify-content: center;
+/* HERO RIGHT - Moon */
+.hero-right {
+  display: flex; align-items: center; justify-content: center;
+  position: relative; height: 100%;
+  animation: fadeUp 1s ease 0.25s both;
 }
 
-.ca-label {
-font-family: var(–font-mono);
-font-size: 0.65rem;
-letter-spacing: 3px;
-color: var(–cheese);
-text-transform: uppercase;
+.moon-orb {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  width: clamp(240px, 26vw, 420px);
+  height: clamp(240px, 26vw, 420px);
+}
+.moon-ring-1 {
+  position: absolute; inset: -24px;
+  border: 1px solid rgba(245,208,0,0.14);
+  border-radius: 50%;
+  animation: spin 14s linear infinite;
+}
+.moon-ring-1::after {
+  content: '';
+  position: absolute;
+  width: 10px; height: 10px;
+  background: var(--yellow);
+  border-radius: 50%;
+  top: -5px; left: 50%; transform: translateX(-50%);
+  box-shadow: 0 0 12px var(--yellow);
+}
+.moon-ring-2 {
+  position: absolute; inset: -52px;
+  border: 1px dashed rgba(245,208,0,0.06);
+  border-radius: 50%;
+  animation: spin 22s linear infinite reverse;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.moon-emoji {
+  font-size: clamp(130px, 15vw, 220px);
+  line-height: 1;
+  filter: drop-shadow(0 0 50px rgba(245,208,0,0.65));
+  animation: moonFloat 4.5s ease-in-out infinite;
+  position: relative; z-index: 2;
+}
+.mouse-rider {
+  position: absolute;
+  font-size: clamp(44px, 5vw, 78px);
+  bottom: 8%; right: 8%;
+  animation: mouseFloat 3.2s ease-in-out infinite 0.6s;
+  filter: drop-shadow(0 0 12px rgba(245,208,0,0.5));
+  z-index: 3;
 }
 
-.ca-text {
-font-family: var(–font-mono);
-font-size: 0.72rem;
-color: rgba(255,255,255,0.6);
-word-break: break-all;
-cursor: pointer;
-transition: color 0.2s;
+@keyframes moonFloat {
+  0%,100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-20px) rotate(2deg); }
 }
-.ca-text:hover { color: var(–cheese); }
-
-.copy-btn {
-background: rgba(249,194,60,0.15);
-border: 1px solid rgba(249,194,60,0.3);
-color: var(–cheese);
-padding: 0.3rem 0.9rem;
-border-radius: 8px;
-font-family: var(–font-mono);
-font-size: 0.65rem;
-letter-spacing: 1px;
-cursor: pointer;
-transition: all 0.2s;
-white-space: nowrap;
-}
-.copy-btn:hover { background: rgba(249,194,60,0.3); }
-
-/* MARQUEE */
-.marquee-wrap {
-background: linear-gradient(90deg, var(–purple), #a855f7, var(–purple));
-padding: 0.8rem 0;
-overflow: hidden;
-position: relative;
-z-index: 1;
+@keyframes mouseFloat {
+  0%,100% { transform: translateY(0) rotate(6deg); }
+  50%      { transform: translateY(-14px) rotate(-6deg); }
 }
 
-.marquee-inner {
-display: inline-flex;
-animation: marquee 25s linear infinite;
-white-space: nowrap;
+/* ===== MOBILE HERO ===== */
+.mobile-hero {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 68px 20px 44px;
+  gap: 18px;
+  min-height: 100svh;
 }
 
-.marquee-item {
-font-family: var(–font-display);
-font-size: 1rem;
-letter-spacing: 2px;
-color: rgba(255,255,255,0.9);
-padding: 0 2rem;
+.mob-mascot {
+  font-size: 96px;
+  animation: mouseFloat 2.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 24px rgba(245,208,0,0.7));
+  line-height: 1;
+}
+.mob-badge {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: var(--yellow);
+  background: rgba(245,208,0,0.08);
+  border: 1px solid rgba(245,208,0,0.35);
+  padding: 7px 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px var(--yellow);
+}
+.mob-title {
+  font-family: 'Black Han Sans', sans-serif;
+  font-size: clamp(60px, 23vw, 92px);
+  color: var(--yellow);
+  line-height: 0.88;
+  text-shadow: 4px 4px 0 var(--orange), 0 0 40px rgba(245,208,0,0.45);
+}
+.mob-sub {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: var(--pink);
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px var(--pink);
+  text-transform: uppercase;
+}
+.mob-desc {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.72;
+  max-width: 340px;
+}
+.mob-desc strong { color: var(--yellow); }
+.mob-desc em { color: var(--cyan); font-style: normal; }
+
+.mob-btns {
+  display: flex; flex-direction: column; gap: 11px;
+  width: 100%; max-width: 320px;
+}
+.mob-btns .btn { width: 100%; justify-content: center; font-size: 8px; padding: 14px 20px; }
+
+.mob-ca {
+  width: 100%; max-width: 360px;
+  background: rgba(245,208,0,0.05);
+  border: 1px solid rgba(245,208,0,0.28);
+  padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 10px; align-items: center;
+}
+.mob-ca-lbl { font-family: 'Press Start 2P', monospace; font-size: 7px; color: var(--yellow); letter-spacing: 2px; }
+.mob-ca-addr { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--cyan); word-break: break-all; text-align: center; }
+.mob-ca-btn {
+  font-family: 'Press Start 2P', monospace; font-size: 8px;
+  background: var(--yellow); color: #000; border: none;
+  padding: 9px 18px; letter-spacing: 1px; text-transform: uppercase;
+  box-shadow: 2px 2px 0 var(--orange); transition: all 0.15s;
+}
+.mob-ca-btn.ok { background: var(--cyan); }
+
+/* TICKER */
+.ticker-wrap {
+  position: relative; z-index: 10;
+  overflow: hidden;
+  background: var(--yellow);
+  padding: 10px 0;
+  border-top: 2px solid var(--orange);
+  border-bottom: 2px solid var(--orange);
+}
+.ticker-track {
+  display: inline-flex; gap: 64px; white-space: nowrap;
+  animation: slide 22s linear infinite;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px; color: #000; letter-spacing: 2px; text-transform: uppercase;
+}
+@keyframes slide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* SHARED SECTIONS */
+.section { position: relative; z-index: 10; padding: 80px 44px; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+
+.sec-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(11px, 1.5vw, 17px);
+  color: var(--yellow);
+  text-shadow: 3px 3px 0 var(--orange), 0 0 20px rgba(245,208,0,0.35);
+  letter-spacing: 2px;
+  text-align: center;
+  margin-bottom: 52px;
+  text-transform: uppercase;
 }
 
-.marquee-sep { opacity: 0.5; }
-
-/* SECTIONS */
-.section {
-padding: 6rem 2rem;
-max-width: 1100px;
-margin: 0 auto;
-position: relative;
-z-index: 1;
+/* STATS */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 30px 18px;
+  text-align: center;
+  position: relative; overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.stat-card::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--yellow), var(--orange));
+  transform: scaleX(0); transition: transform 0.3s;
+}
+.stat-card:hover { border-color: rgba(245,208,0,0.55); transform: translateY(-6px); }
+.stat-card:hover::after { transform: scaleX(1); }
+.stat-icon { font-size: 34px; display: block; margin-bottom: 12px; }
+.stat-val {
+  font-family: 'Black Han Sans', sans-serif;
+  font-size: clamp(28px, 3vw, 44px);
+  color: var(--yellow);
+  text-shadow: 0 0 20px rgba(245,208,0,0.5);
+  display: block; margin-bottom: 6px;
+}
+.stat-lbl {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(11px, 0.9vw, 13px);
+  color: var(--muted); letter-spacing: 3px; text-transform: uppercase;
 }
 
-.section-tag {
-display: inline-block;
-font-family: var(–font-mono);
-color: var(–purpleLight);
-text-transform: uppercase;
-margin-bottom: 1rem;
-border-left: 3px solid var(–purpleLight);
-padding-left: 0.8rem;
+/* ABOUT */
+.about-bg { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.about-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 60px; align-items: center; }
+.about-left { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.big-mouse { font-size: clamp(80px, 10vw, 160px); animation: mouseFloat 3s ease-in-out infinite; filter: drop-shadow(0 0 30px rgba(245,208,0,0.5)); }
+.about-badge-pill {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px; color: var(--cyan);
+  border: 1px solid var(--cyan);
+  padding: 8px 16px; letter-spacing: 2px; text-transform: uppercase;
+  text-shadow: 0 0 8px var(--cyan);
+  box-shadow: 0 0 10px rgba(0,255,209,0.12);
 }
-
-.section-title {
-font-family: var(–font-display);
-font-size: clamp(2.5rem, 5vw, 4rem);
-line-height: 1.1;
-margin-bottom: 1.5rem;
+.about-copy p {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(14px, 1.1vw, 17px);
+  color: var(--muted); line-height: 1.8; margin-bottom: 18px;
 }
-
-.section-title .highlight { color: var(–cheese); }
-
-/* ABOUT cards */
-.about-grid {
-display: grid;
-grid-template-columns: repeat(3, 1fr);
-gap: 1.5rem;
-margin-top: 4rem;
-}
-
-.card {
-background: var(–card);
-border: 1px solid rgba(255,255,255,0.07);
-border-radius: 20px;
-padding: 2rem;
-transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
-}
-.card:hover {
-transform: translateY(-6px);
-border-color: rgba(249,194,60,0.3);
-box-shadow: 0 12px 40px rgba(249,194,60,0.1);
-}
-
-.card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-.card-title {
-font-family: var(–font-display);
-font-size: 1.4rem;
-color: var(–cheese);
-margin-bottom: 0.7rem;
-}
-.card-body {
-font-size: 0.95rem;
-color: var(–muted);
-line-height: 1.7;
-font-weight: 600;
-}
+.about-copy p strong { color: var(--yellow); }
+.about-copy p em { color: var(--cyan); font-style: normal; }
 
 /* TOKENOMICS */
-.token-section {
-background: var(–bg2);
-border-top: 1px solid rgba(255,255,255,0.05);
-border-bottom: 1px solid rgba(255,255,255,0.05);
-position: relative;
-z-index: 1;
+.tok-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.tok-card {
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,40,121,0.28);
+  padding: 26px 18px; text-align: center;
+  box-shadow: 4px 4px 0 rgba(255,40,121,0.12);
+  transition: transform 0.3s;
 }
-
-.token-inner {
-max-width: 1100px;
-margin: 0 auto;
-padding: 6rem 2rem;
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 5rem;
-align-items: center;
+.tok-card:nth-child(even) { border-color: rgba(0,255,209,0.28); box-shadow: 4px 4px 0 rgba(0,255,209,0.12); }
+.tok-card:hover { transform: translate(-3px,-3px); }
+.tok-pct {
+  font-family: 'Black Han Sans', sans-serif;
+  font-size: clamp(32px, 3.5vw, 52px);
+  color: var(--yellow); text-shadow: 0 0 25px rgba(245,208,0,0.65);
+  display: block; margin-bottom: 8px;
 }
+.tok-name { font-family: 'Press Start 2P', monospace; font-size: clamp(7px, 0.7vw, 10px); color: var(--text); letter-spacing: 1px; text-transform: uppercase; line-height: 1.7; }
 
-.token-table {
-display: flex;
-flex-direction: column;
-gap: 0;
-border-radius: 16px;
-overflow: hidden;
-border: 1px solid rgba(255,255,255,0.07);
+/* ROADMAP */
+.roadmap-box { max-width: 800px; margin: 0 auto; position: relative; }
+.rm-spine {
+  position: absolute; left: 35px; top: 36px; bottom: 36px; width: 2px;
+  background: linear-gradient(180deg, var(--cyan), var(--yellow), var(--pink), rgba(255,255,255,0.08));
 }
-
-.token-row {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 1.1rem 1.5rem;
-border-bottom: 1px solid rgba(255,255,255,0.05);
-transition: background 0.2s;
+.rm-item { display: flex; gap: 26px; padding: 18px 0; align-items: flex-start; }
+.rm-dot {
+  min-width: 70px; height: 70px;
+  background: var(--bg); border: 2px solid rgba(245,208,0,0.25);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; position: relative; z-index: 2; flex-shrink: 0;
+  transition: border-color 0.3s;
 }
-.token-row:last-child { border-bottom: none; }
-.token-row:hover { background: rgba(255,255,255,0.03); }
-
-.token-key {
-font-size: 0.9rem;
-font-weight: 700;
-color: var(–muted);
-text-transform: uppercase;
-letter-spacing: 1px;
+.rm-item.done .rm-dot { border-color: var(--cyan); box-shadow: 0 0 16px rgba(0,255,209,0.3); }
+.rm-item:hover .rm-dot { border-color: var(--yellow); box-shadow: 0 0 16px rgba(245,208,0,0.3); }
+.rm-body {
+  flex: 1; background: var(--card);
+  border: 1px solid rgba(255,255,255,0.05);
+  padding: 18px 22px; transition: border-color 0.3s;
 }
-
-.token-val {
-font-family: var(–font-mono);
-font-size: 0.9rem;
-color: var(–cheese);
-font-weight: 700;
+.rm-item:hover .rm-body { border-color: rgba(245,208,0,0.18); }
+.rm-item.done .rm-body { border-color: rgba(0,255,209,0.12); }
+.rm-phase {
+  font-family: 'Press Start 2P', monospace; font-size: 8px;
+  color: var(--yellow); letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase;
 }
-
-.token-val.green { color: #4ade80; }
-
-/* Distribution bars */
-.dist-wrap {
-display: flex;
-flex-direction: column;
-gap: 1.5rem;
-}
-
-.dist-item { display: flex; flex-direction: column; gap: 0.4rem; }
-
-.dist-header {
-display: flex;
-justify-content: space-between;
-font-size: 0.85rem;
-font-weight: 700;
-}
-
-.dist-name { color: var(–white); }
-.dist-pct { color: var(–cheese); font-family: var(–font-mono); }
-
-.dist-bar-bg {
-height: 8px;
-background: rgba(255,255,255,0.07);
-border-radius: 10px;
-overflow: hidden;
-}
-
-.dist-bar-fill {
-height: 100%;
-border-radius: 10px;
-animation: barGrow 1.5s ease both;
-}
+.rm-item.done .rm-phase { color: var(--cyan); }
+.rm-desc { font-family: 'Share Tech Mono', monospace; font-size: clamp(14px, 1.1vw, 17px); color: var(--muted); line-height: 1.65; }
+.rm-desc strong { color: var(--text); }
 
 /* HOW TO BUY */
-.steps-wrap {
-display: grid;
-grid-template-columns: repeat(4, 1fr);
-gap: 1.5rem;
-margin-top: 4rem;
-position: relative;
-}
-
-.steps-wrap::before {
-content: ‘’;
-position: absolute;
-top: 3rem;
-left: 10%;
-right: 10%;
-height: 2px;
-background: linear-gradient(90deg, transparent, var(–purple), var(–cheese), var(–purple), transparent);
-opacity: 0.4;
-z-index: 0;
-}
-
+.htb-bg { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
 .step-card {
-background: var(–card);
-border: 1px solid rgba(255,255,255,0.07);
-border-radius: 20px;
-padding: 2rem 1.5rem;
-text-align: center;
-position: relative;
-z-index: 1;
-transition: transform 0.3s, border-color 0.3s;
+  background: rgba(0,0,0,0.42);
+  border: 1px solid rgba(0,255,209,0.18);
+  padding: 26px 18px; text-align: center; position: relative;
+  transition: all 0.3s;
 }
-.step-card:hover { transform: translateY(-6px); border-color: rgba(108,63,197,0.4); }
-
-.step-num {
-width: 52px;
-height: 52px;
-border-radius: 50%;
-background: linear-gradient(135deg, var(–purple), #a855f7);
-display: flex;
-align-items: center;
-justify-content: center;
-font-family: var(–font-display);
-font-size: 1.4rem;
-color: #fff;
-margin: 0 auto 1.2rem;
-box-shadow: 0 4px 20px rgba(108,63,197,0.4);
+.step-card:hover { border-color: var(--cyan); box-shadow: 0 0 20px rgba(0,255,209,0.14); transform: translateY(-5px); }
+.step-bg-num {
+  position: absolute; top: 8px; right: 12px;
+  font-family: 'Black Han Sans', sans-serif;
+  font-size: 52px; color: rgba(255,255,255,0.04); line-height: 1;
 }
+.step-icon { font-size: 36px; display: block; margin-bottom: 14px; }
+.step-ttl { font-family: 'Press Start 2P', monospace; font-size: clamp(7px, 0.8vw, 10px); color: var(--yellow); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+.step-txt { font-family: 'Share Tech Mono', monospace; font-size: clamp(13px, 1vw, 16px); color: var(--muted); line-height: 1.6; }
+.htb-cta { text-align: center; margin-top: 48px; }
 
-.step-title {
-font-family: var(–font-display);
-font-size: 1.2rem;
-color: var(–cheese);
-margin-bottom: 0.7rem;
+/* COMMUNITY */
+.links-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 780px; margin: 0 auto; }
+.link-card {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  background: var(--card); border: 1px solid var(--border);
+  padding: 32px 18px; text-align: center; transition: all 0.3s;
 }
+.link-card:hover { border-color: rgba(245,208,0,0.5); transform: translateY(-5px); box-shadow: 0 0 20px rgba(245,208,0,0.09); }
+.link-icon { font-size: 42px; }
+.link-name { font-family: 'Press Start 2P', monospace; font-size: 8px; color: var(--yellow); letter-spacing: 2px; text-transform: uppercase; }
+.link-sub { font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--muted); letter-spacing: 1px; }
 
-.step-body {
-font-size: 0.88rem;
-color: var(–muted);
-line-height: 1.6;
-font-weight: 600;
+/* MARQUEE STRIP */
+.marquee-strip {
+  position: relative; z-index: 10; overflow: hidden;
+  padding: 18px 0;
+  border-top: 1px solid rgba(255,40,121,0.18);
+  border-bottom: 1px solid rgba(255,40,121,0.18);
+  background: rgba(255,40,121,0.035);
 }
-
-/* Moonshot banner */
-.moonshot-banner {
-background: linear-gradient(135deg, rgba(108,63,197,0.2), rgba(168,85,247,0.1));
-border: 1px solid rgba(108,63,197,0.4);
-border-radius: 24px;
-padding: 3rem;
-text-align: center;
-margin-top: 4rem;
-position: relative;
-overflow: hidden;
+.marquee-track {
+  display: inline-flex; gap: 60px; white-space: nowrap;
+  animation: slide 30s linear infinite;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(15px, 1.8vw, 22px);
+  color: var(--pink); text-shadow: 0 0 10px var(--pink);
+  letter-spacing: 4px; text-transform: uppercase;
 }
-
-.moonshot-banner::before {
-content: ‘🚀’;
-position: absolute;
-font-size: 8rem;
-opacity: 0.06;
-top: -1rem;
-right: 2rem;
-animation: float 5s ease-in-out infinite;
-}
-
-.moonshot-banner h3 {
-font-family: var(–font-display);
-font-size: 2rem;
-color: var(–cheese);
-margin-bottom: 0.7rem;
-}
-
-.moonshot-banner p {
-color: var(–muted);
-font-size: 1rem;
-font-weight: 600;
-margin-bottom: 1.5rem;
-}
-
-/* Community */
-.community-section {
-text-align: center;
-padding: 6rem 2rem;
-position: relative;
-z-index: 1;
-}
-
-.community-section .section-tag { border: none; padding: 0; display: block; text-align: center; margin-bottom: 1rem; }
-
-.community-links {
-display: flex;
-justify-content: center;
-gap: 1.5rem;
-margin-top: 2.5rem;
-flex-wrap: wrap;
-}
-
-.community-card {
-display: flex;
-align-items: center;
-gap: 1rem;
-background: var(–card);
-border: 1px solid rgba(255,255,255,0.07);
-border-radius: 16px;
-padding: 1.2rem 2rem;
-text-decoration: none;
-color: var(–white);
-font-weight: 700;
-font-size: 1rem;
-transition: all 0.25s;
-min-width: 180px;
-justify-content: center;
-}
-.community-card:hover {
-transform: translateY(-4px);
-border-color: rgba(249,194,60,0.4);
-box-shadow: 0 8px 30px rgba(249,194,60,0.12);
-color: var(–cheese);
-}
-
-.community-icon { font-size: 1.5rem; }
 
 /* FOOTER */
 footer {
-background: var(–bg2);
-border-top: 1px solid rgba(255,255,255,0.05);
-padding: 3rem 2rem;
-text-align: center;
-position: relative;
-z-index: 1;
+  position: relative; z-index: 10;
+  background: var(--bg); border-top: 1px solid rgba(245,208,0,0.18);
+  padding: 60px 44px 40px; text-align: center;
 }
-
 .footer-logo {
-font-family: var(–font-display);
-font-size: 2rem;
-color: var(–cheese);
-margin-bottom: 1rem;
+  font-family: 'Black Han Sans', sans-serif;
+  font-size: clamp(36px, 5vw, 68px);
+  color: var(--yellow);
+  text-shadow: 4px 4px 0 var(--orange), 0 0 30px rgba(245,208,0,0.38);
+  display: block; margin-bottom: 24px;
+}
+.footer-links-row {
+  display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin-bottom: 24px;
+}
+.footer-links-row a {
+  font-family: 'Share Tech Mono', monospace; font-size: 14px;
+  color: var(--muted); letter-spacing: 2px; text-transform: uppercase; transition: color 0.2s;
+}
+.footer-links-row a:hover { color: var(--yellow); }
+.footer-disc {
+  font-family: 'Share Tech Mono', monospace; font-size: 12px;
+  color: rgba(238,238,255,0.22); max-width: 560px; margin: 0 auto 20px; line-height: 1.75; letter-spacing: 0.5px;
+}
+.footer-copy { font-family: 'Press Start 2P', monospace; font-size: 7px; color: rgba(238,238,255,0.18); letter-spacing: 2px; }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes flicker { 0%,88%,100%{opacity:1} 90%{opacity:.6} 92%{opacity:1} 94%{opacity:.45} 96%{opacity:1} }
+
+.reveal { opacity: 1; transform: none; }
+.reveal.animate-ready { opacity: 0; transform: translateY(34px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+.divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); position: relative; z-index: 10; }
+
+/* ============================================================
+   RESPONSIVE — MOBILE
+============================================================ */
+@media (max-width: 768px) {
+  .desktop-nav { display: none; }
+  .mobile-nav  { display: flex; }
+  .desktop-hero { display: none; }
+  .mobile-hero  { display: flex; }
+
+  .section { padding: 56px 18px; }
+  .sec-title { font-size: 10px; margin-bottom: 36px; }
+
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .stat-card { padding: 20px 12px; }
+
+  .about-grid { grid-template-columns: 1fr; gap: 28px; }
+  .about-left { flex-direction: row; gap: 16px; }
+  .big-mouse { font-size: 80px; }
+
+  .tok-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .tok-card { padding: 18px 12px; }
+
+  .rm-spine { left: 27px; }
+  .rm-dot { min-width: 54px; height: 54px; font-size: 20px; }
+
+  .steps-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .step-card { padding: 18px 12px; }
+
+  .links-grid { grid-template-columns: 1fr; gap: 12px; max-width: 320px; }
+
+  footer { padding: 40px 18px 28px; }
 }
 
-.footer-disclaimer {
-font-family: var(–font-mono);
-font-size: 0.6rem;
-color: rgba(255,255,255,0.2);
-max-width: 600px;
-margin: 1rem auto 0;
-line-height: 1.8;
-letter-spacing: 0.3px;
-}
-
-/* Glow blobs */
-.glow-blob {
-position: fixed;
-border-radius: 50%;
-filter: blur(80px);
-pointer-events: none;
-z-index: 0;
-opacity: 0.12;
-}
-.blob1 { width: 500px; height: 500px; background: var(–purple); top: -100px; left: -100px; }
-.blob2 { width: 400px; height: 400px; background: var(–cheese); bottom: 10%; right: -100px; }
-.blob3 { width: 300px; height: 300px; background: var(–pink); top: 50%; left: 50%; transform: translate(-50%,-50%); }
-
-/* Animations */
-@keyframes fadeUp {
-from { opacity: 0; transform: translateY(30px); }
-to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes float {
-0%, 100% { transform: translateY(0); }
-50% { transform: translateY(-15px); }
-}
-
-@keyframes marquee {
-from { transform: translateX(0); }
-to { transform: translateX(-50%); }
-}
-
-@keyframes barGrow {
-from { width: 0; }
-}
-
-@keyframes twinkle {
-0%, 100% { opacity: 0.3; }
-50% { opacity: 1; }
-}
-
-@media (max-width: 900px) {
-.about-grid { grid-template-columns: 1fr; }
-.token-inner { grid-template-columns: 1fr; gap: 2rem; }
-.steps-wrap { grid-template-columns: 1fr 1fr; }
-.steps-wrap::before { display: none; }
-nav { padding: 1rem 1.5rem; }
-.nav-links li:not(:last-child) { display: none; }
+@media (max-width: 420px) {
+  .tok-grid { grid-template-columns: 1fr; max-width: 300px; margin: 0 auto; }
+  .steps-grid { grid-template-columns: 1fr; max-width: 300px; margin: 0 auto; }
+  .about-left { flex-direction: column; }
 }
 </style>
 
 </head>
 <body>
 
-<div class="stars"></div>
-<div class="glow-blob blob1"></div>
-<div class="glow-blob blob2"></div>
-<div class="glow-blob blob3"></div>
+<canvas id="starfield"></canvas>
 
-<!-- NAV -->
+<div class="amb amb-1"></div>
+<div class="amb amb-2"></div>
 
-<nav>
-  <div class="nav-logo"><span class="mouse-icon">🐭</span> $MOUSE</div>
+<!-- ===== DESKTOP NAV ===== -->
+
+<nav class="desktop-nav">
+  <div class="nav-brand">🐭 $MOUSE</div>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#tokenomics">Tokenomics</a></li>
-    <li><a href="#how-to-buy">How to Buy</a></li>
-    <li><a href="https://moonshot.com/5akP3jinnufMVoWWjUfiwm2BinjycYkivbGQnNLNmoon?ref=S5bDQf" target="_blank" class="nav-btn">Buy on Moonshot 🚀</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#buy">How To Buy</a></li>
+    <li><a href="#community">Community</a></li>
   </ul>
+  <a href="https://moonshot.money/5akP3jinnufMVoWWjUfiwm2BinjycYkivbGQnNLNmoon?ref=S5bDQf" target="_blank" class="nav-cta">🌕 Buy $MOUSE</a>
 </nav>
 
-<!-- HERO -->
+<!-- ===== MOBILE NAV ===== -->
 
-<section class="hero">
-  <div class="moon-bg"></div>
+<nav class="mobile-nav">
+  <div class="mob-brand">🐭 $MOUSE</div>
+  <a href="https://t.me/+WKsBqbbkEeEwZGRh" target="_blank" class="mob-tg-btn">✈ Join TG</a>
+</nav>
 
-  <div class="hero-badge">
-    <span>🚀</span> Live on Moonshot &nbsp;•&nbsp; Solana
+<div class="content">
+
+<!-- ===== DESKTOP HERO ===== -->
+
+<section class="desktop-hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">⚡ Launched on Moonshot · Solana</div>
+    <h1 class="hero-title">$MOUSE</h1>
+    <div class="hero-sub">🚀 The Cheese Is On The Moon 🌕</div>
+    <p class="hero-desc">
+      The <strong>fastest mouse</strong> on Solana is heading to the moon — and it's taking
+      <em>every degen</em> with it. Fair launched on Moonshot.
+      <strong>No team tokens. No taxes. No presale. No BS.</strong> Just pure community rocket fuel. 🧀
+    </p>
+    <div class="ca-bar">
+      <span class="ca-lbl">CA:</span>
+      <span class="ca-addr-txt">5akP3jinnufMVoWWjUfiwm2BinjycYkivbGQnNLNmoon</span>
+      <button class="copy-btn" id="copyDesk" onclick="copyCA('copyDesk')">📋 Copy</button>
+    </div>
+    <div class="hero-btns">
+      <a href="https://moonshot.money/5akP3jinnufMVoWWjUfiwm2BinjycYkivbGQnNLNmoon?ref=S5bDQf" target="_blank" class="btn btn-moon">🌕 Buy on Moonshot</a>
+      <a href="https://t.me/+WKsBqbbkEeEwZGRh" target="_blank" class="btn btn-tg">✈ Telegram Group</a>
+      <a href="https://t.me/c/3429919451/90" target="_blank" class="btn btn-outline">📣 TG Channel</a>
+    </div>
   </div>
 
-  <div class="hero-mouse">🐭</div>
-
-  <h1 class="hero-title">$MOUSE</h1>
-  <p class="hero-sub">The smallest creature with the <span>biggest gains</span> in the galaxy</p>
-
-  <div class="hero-buttons">
-    <a href="https://moonshot.com/5akP3jinnufMVoWWjUfiwm2BinjycYkivbGQnNLNmoon?ref=S5bDQf" target="_blank" class="btn btn-moon">🚀 Buy on Moonshot</a>
-    <a href="https://t.me/+WKsBqbbkEeEwZGRh" target="_blank" class="btn btn-outline">💬 Join Telegram</a>
+  <div class="hero-right">
+    <div class="moon-orb">
+      <div class="moon-ring-1"></div>
+      <div class="moon-ring-2"></div>
+      <div class="moon-emoji">🌕</div>
+      <div class="mouse-rider">🐭</div>
+    </div>
   </div>
+</section>
 
-  <div class="ca-box">
-    <span class="ca-label">CA</span>
-    <span class="ca-text" id="caText">5akP3jinnufMVoWWjUfiwm2BinjycYkivbGQnNLNmoon</span>
-    <button class="copy-btn" onclick="copyCA()">COPY</button>
+<!-- ===== MOBILE HERO ===== -->
+
+<section class="mobile-hero">
+  <div class="mob-mascot">🐭</div>
+  <div class="mob-badge">⚡ Launched on Moonshot · Solana</div>
+  <h1 class="mob-title">$MOUSE</h1>
+  <div class="mob-sub">🚀 Cheese Is On The Moon 🌕</div>
+  <p class="mob-desc">
+    The <strong>fastest mouse</strong> on Solana. Fair launched.
+    <em>No team tokens.</em> No taxes. Pure degen energy. 🧀
+  </p>
+  <div class="mob-btns">
+    <a href="https://moonshot.money/5akP3jinnufMVoWWjUfiwm2BinjycYkivbGQnNLNmoon?ref=S5bDQf" target="_blank" class="btn btn-moon">🌕 Buy on Moonshot</a>
+    <a href="https://t.me/+WKsBqbbkEeEwZGRh" target="_blank" class="btn btn-tg">✈ Join Telegram</a>
+    <a href="https://t.me/c/3429919451/90" target="_blank" class="btn btn-outline">📣 TG Channel</a>
+  </div>
+  <div class="mob-ca">
+    <div class="mob-ca-lbl">Contract Address</div>
+    <div class="mob-ca-addr">5akP3jinnufMVoWWjUfiwm2BinjycYkivbGQnNLNmoon</div>
+    <button class="mob-ca-btn" id="copyMob" onclick="copyCA('copyMob')">📋 Copy CA</button>
+  </div>
+</section>
+
+<!-- TICKER -->
+
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    🐭 $MOUSE TO THE MOON &nbsp;⭐ LAUNCHED ON MOONSHOT &nbsp;🚀 SOLANA FAST &nbsp;🧀 CATCH THE CHEESE &nbsp;🌕 LUNAR BOUND &nbsp;💎 DIAMOND PAWS ONLY &nbsp;🔥 0% TAX &nbsp;
+    🐭 $MOUSE TO THE MOON &nbsp;⭐ LAUNCHED ON MOONSHOT &nbsp;🚀 SOLANA FAST &nbsp;🧀 CATCH THE CHEESE &nbsp;🌕 LUNAR BOUND &nbsp;💎 DIAMOND PAWS ONLY &nbsp;🔥 0% TAX &nbsp;
+  </div>
+</div>
+
+<!-- ===== STATS ===== -->
+
+<section class="section reveal" id="stats">
+  <div class="section-inner">
+    <div class="sec-title">📊 Mouse Stats</div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-icon">🧀</span>
+        <span class="stat-val">1B</span>
+        <span class="stat-lbl">Total Supply</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">🔥</span>
+        <span class="stat-val">0%</span>
+        <span class="stat-lbl">Buy / Sell Tax</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">⚡</span>
+        <span class="stat-val">SOL</span>
+        <span class="stat-lbl">Blockchain</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">🌕</span>
+        <span class="stat-val">LIVE</span>
+        <span class="stat-lbl">Status</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== ABOUT ===== -->
+
+<section class="section about-bg reveal" id="about">
+  <div class="section-inner">
+    <div class="sec-title">🐭 About $MOUSE</div>
+    <div class="about-grid">
+      <div class="about-left">
+        <div class="big-mouse">🐭</div>
+        <div class="about-badge-pill">🧀 Built Different</div>
+      </div>
+      <div class="about-copy">
+        <p>
+          <strong>$MOUSE</strong> isn't just another memecoin. It's a <em>movement</em>.
+          Born on the fastest chain in the world — <strong>Solana</strong> — and fair-launched
+          directly on <strong>Moonshot</strong>, $MOUSE was built for the degens who know
+          that the biggest cheese is always worth chasing. 🧀
+        </p>
+        <p>
+          <strong>No VCs. No presales. No team wallet. No games.</strong>
+          The liquidity is locked, the supply is transparent, and the only direction
+          we're heading is up. 🌕
+        </p>
+        <p>
+          The community runs everything. Every holder is a <em>diamond-pawed mouse</em>
+          riding a rocket. The mission? Get to the moon — and then figure out
+          what's <strong>beyond it.</strong>
+        </p>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- MARQUEE -->
 
-<div class="marquee-wrap">
-  <div class="marquee-inner">
-    <span class="marquee-item">🐭 $MOUSE</span>
-    <span class="marquee-item marquee-sep">•</span>
-    <span class="marquee-item">TO THE MOON 🌙</span>
-    <span class="marquee-item marquee-sep">•</span>
-    <span class="marquee-item">🚀 MOONSHOT</span>
-    <span class="marquee-item marquee-sep">•</span>
-    <span class="marquee-item">SOLANA NATIVE 💜</span>
-    <span class="marquee-item marquee-sep">•</span>
-    <span class="marquee-item">🧀 BIG CHEESE ENERGY</span>
-    <span class="marquee-item marquee-sep">•</span>
-    <span class="marquee-item">0% TAX 🔥</span>
-    <span class="marquee-item marquee-sep">•</span>
-    <span class="marquee-item">🐭 $MOUSE</span>
-    <span class="marquee-item marquee-sep">•</span>
-    <span class="marquee-item">TO THE MOON 🌙</span>
-    <span class="marquee-item marquee-sep">•</span>
-    <span class="marquee-item">🚀 MOONSHOT</span>
-    <span class="marquee-item marquee-sep">•</span>
-    <span class="marquee-item">SOLANA NATIVE 💜</span>
-    <span class="marquee-item marquee-sep">•</span>
-    <span class="marquee-item">🧀 BIG CHEESE ENERGY</span>
-    <span class="marquee-item marquee-sep">•</span>
-    <span class="marquee-item">0% TAX 🔥</span>
+<div class="marquee-strip">
+  <div class="marquee-track">
+    🐭 $MOUSE &nbsp;·&nbsp; 🧀 CATCH THE CHEESE &nbsp;·&nbsp; 🚀 MOONSHOT LAUNCH &nbsp;·&nbsp; 🌕 LUNAR BOUND &nbsp;·&nbsp; 💎 DIAMOND PAWS &nbsp;·&nbsp; ⚡ SOLANA SPEED &nbsp;·&nbsp;
+    🐭 $MOUSE &nbsp;·&nbsp; 🧀 CATCH THE CHEESE &nbsp;·&nbsp; 🚀 MOONSHOT LAUNCH &nbsp;·&nbsp; 🌕 LUNAR BOUND &nbsp;·&nbsp; 💎 DIAMOND PAWS &nbsp;·&nbsp; ⚡ SOLANA SPEED &nbsp;·&nbsp;
   </div>
 </div>
 
-<!-- ABOUT -->
+<!-- ===== TOKENOMICS ===== -->
 
-<section class="section" id="about">
-  <p class="section-tag">// 001 — About $MOUSE</p>
-  <h2 class="section-title">Small in size.<br><span class="highlight">Massive in ambition.</span></h2>
-  <p style="color:var(--muted); font-size:1.1rem; line-height:1.8; font-weight:600; max-width:620px;">
-    $MOUSE isn't just another meme coin. It's the scrappy, cheese-chasing underdog of the Solana ecosystem — launched fair on Moonshot, owned entirely by the community, and aimed squarely at the moon. 🌙
-  </p>
-
-  <div class="about-grid">
-    <div class="card">
-      <div class="card-icon">🌙</div>
-      <div class="card-title">Moonshot Native</div>
-      <div class="card-body">Launched and traded directly on Moonshot — the fastest growing meme coin launchpad on Solana. No rugs, no BS, just vibes.</div>
-    </div>
-    <div class="card">
-      <div class="card-icon">🧀</div>
-      <div class="card-title">Community First</div>
-      <div class="card-body">No VC bags, no insider allocation. Every $MOUSE holder is an equal member of the cheese-seeking community. Fair is fair.</div>
-    </div>
-    <div class="card">
-      <div class="card-icon">🔒</div>
-      <div class="card-title">SAFU</div>
-      <div class="card-body">Liquidity locked, mint authority revoked. The mouse is free and the cheese belongs to the community. Sleep easy, holder.</div>
+<section class="section" id="tokenomics">
+  <div class="section-inner">
+    <div class="sec-title">🧮 Tokenomics</div>
+    <div class="tok-grid">
+      <div class="tok-card">
+        <span class="tok-pct">100%</span>
+        <div class="tok-name">Liquidity Pool</div>
+      </div>
+      <div class="tok-card">
+        <span class="tok-pct">0%</span>
+        <div class="tok-name">Team Tokens</div>
+      </div>
+      <div class="tok-card">
+        <span class="tok-pct">0%</span>
+        <div class="tok-name">Marketing Wallet</div>
+      </div>
+      <div class="tok-card">
+        <span class="tok-pct">0%</span>
+        <div class="tok-name">Buy / Sell Tax</div>
+      </div>
+      <div class="tok-card">
+        <span class="tok-pct">1B</span>
+        <div class="tok-name">Total Supply</div>
+      </div>
+      <div class="tok-card">
+        <span class="tok-pct">🔥</span>
+        <div class="tok-name">LP Burned & Locked</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- TOKENOMICS -->
+<div class="divider"></div>
 
-<section class="token-section" id="tokenomics">
-  <div class="token-inner">
-    <div>
-      <p class="section-tag">// 002 — Tokenomics</p>
-      <h2 class="section-title">Simple.<br><span class="highlight">Transparent.</span><br>Fair.</h2>
-      <p style="color:var(--muted); font-size:1rem; line-height:1.7; font-weight:600; margin-top:1rem;">
-        No tricks. No hidden wallets. Just a squeaky-clean token structure designed for long-term holders.
-      </p>
+<!-- ===== ROADMAP ===== -->
+
+<section class="section about-bg" id="roadmap">
+  <div class="section-inner">
+    <div class="sec-title">🗺️ Roadmap</div>
+    <div class="roadmap-box">
+      <div class="rm-spine"></div>
 
 
-  <div class="token-table" style="margin-top:2rem;">
-    <div class="token-row">
-      <span class="token-key">Token Name</span>
-      <span class="token-val">Mouse Coin</span>
-    </div>
-    <div class="token-row">
-      <span class="token-key">Ticker</span>
-      <span class="token-val">$MOUSE</span>
-    </div>
-    <div class="token-row">
-      <span class="token-key">Network</span>
-      <span class="token-val">Solana</span>
-    </div>
-    <div class="token-row">
-      <span class="token-key">Platform</span>
-      <span class="token-val">Moonshot</span>
-    </div>
-    <div class="token-row">
-      <span class="token-key">Buy / Sell Tax</span>
-      <span class="token-val green">0% / 0%</span>
-    </div>
-    <div class="token-row">
-      <span class="token-key">Mint Authority</span>
-      <span class="token-val green">Revoked ✓</span>
-    </div>
-    <div class="token-row">
-      <span class="token-key">LP</span>
-      <span class="token-val green">Locked 🔥</span>
+  <div class="rm-item done">
+    <div class="rm-dot">✅</div>
+    <div class="rm-body">
+      <div class="rm-phase">Phase 1 — Launch</div>
+      <div class="rm-desc"><strong>Fair launch on Moonshot · Community Telegram live</strong><br>CA deployed on Solana · Initial liquidity locked · Token verified on-chain</div>
     </div>
   </div>
-</div>
 
-<div>
-  <p class="section-tag">// Distribution</p>
-  <h3 style="font-family:var(--font-display); font-size:2rem; margin:1rem 0 2rem; color:var(--cheese);">Where the<br>cheese goes 🧀</h3>
+  <div class="rm-item">
+    <div class="rm-dot">🚀</div>
+    <div class="rm-body">
+      <div class="rm-phase">Phase 2 — Liftoff</div>
+      <div class="rm-desc"><strong>1,000+ Holders · CoinGecko & CoinMarketCap listings</strong><br>Major KOL partnerships · Viral meme push · Trending on Moonshot</div>
+    </div>
+  </div>
 
-  <div class="dist-wrap">
-    <div class="dist-item">
-      <div class="dist-header">
-        <span class="dist-name">🌊 Liquidity Pool</span>
-        <span class="dist-pct">90%</span>
-      </div>
-      <div class="dist-bar-bg">
-        <div class="dist-bar-fill" style="width:90%; background: linear-gradient(90deg, var(--purple), #a855f7);"></div>
-      </div>
+  <div class="rm-item">
+    <div class="rm-dot">🌕</div>
+    <div class="rm-body">
+      <div class="rm-phase">Phase 3 — Moon</div>
+      <div class="rm-desc"><strong>10,000+ Holders · First CEX listing secured</strong><br>$MOUSE merch drop · Staking rewards · Global expansion campaign</div>
     </div>
-    <div class="dist-item">
-      <div class="dist-header">
-        <span class="dist-name">📣 Marketing</span>
-        <span class="dist-pct">6%</span>
-      </div>
-      <div class="dist-bar-bg">
-        <div class="dist-bar-fill" style="width:6%; background: linear-gradient(90deg, var(--cheese), var(--cheeseDark)); animation-delay:0.2s;"></div>
-      </div>
-    </div>
-    <div class="dist-item">
-      <div class="dist-header">
-        <span class="dist-name">🛠️ Dev</span>
-        <span class="dist-pct">4%</span>
-      </div>
-      <div class="dist-bar-bg">
-        <div class="dist-bar-fill" style="width:4%; background: linear-gradient(90deg, var(--pink), #ff9de2); animation-delay:0.4s;"></div>
-      </div>
+  </div>
+
+  <div class="rm-item">
+    <div class="rm-dot">🌟</div>
+    <div class="rm-body">
+      <div class="rm-phase">Phase 4 — Beyond</div>
+      <div class="rm-desc"><strong>Tier-1 CEX · DAO governance · $MOUSE ecosystem</strong><br>Major Solana ecosystem partnerships · The cheese is everywhere 🧀</div>
     </div>
   </div>
 </div>
@@ -866,122 +940,170 @@ nav { padding: 1rem 1.5rem; }
   </div>
 </section>
 
-<!-- HOW TO BUY -->
+<!-- ===== HOW TO BUY ===== -->
 
-<section class="section" id="how-to-buy">
-  <p class="section-tag">// 003 — How to Buy</p>
-  <h2 class="section-title">Get your<br><span class="highlight">$MOUSE</span> in 4 steps</h2>
-
-  <div class="steps-wrap">
-    <div class="step-card">
-      <div class="step-num">1</div>
-      <div class="step-title">Get a Wallet</div>
-      <p class="step-body">Download Phantom or Solflare. Set up your wallet and back up your seed phrase securely.</p>
+<section class="section htb-bg" id="buy">
+  <div class="section-inner">
+    <div class="sec-title">💸 How To Buy $MOUSE</div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-bg-num">01</div>
+        <span class="step-icon">👛</span>
+        <div class="step-ttl">Get a Wallet</div>
+        <div class="step-txt">Download <strong>Phantom</strong> or <strong>Solflare</strong>. Create your wallet and back up your seed phrase safely.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-bg-num">02</div>
+        <span class="step-icon">⚡</span>
+        <div class="step-ttl">Get SOL</div>
+        <div class="step-txt">Buy SOL on Coinbase, Binance, or Kraken. Transfer it to your Phantom wallet.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-bg-num">03</div>
+        <span class="step-icon">🌕</span>
+        <div class="step-ttl">Go to Moonshot</div>
+        <div class="step-txt">Head to moonshot.money and search <strong>$MOUSE</strong> or click the buy button below.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-bg-num">04</div>
+        <span class="step-icon">🐭</span>
+        <div class="step-ttl">Buy $MOUSE</div>
+        <div class="step-txt">Swap SOL for $MOUSE. Hold with <strong>diamond paws</strong>. See you on the moon. 🌕🚀</div>
+      </div>
     </div>
-    <div class="step-card">
-      <div class="step-num">2</div>
-      <div class="step-title">Get SOL</div>
-      <p class="step-body">Buy Solana from any exchange (Coinbase, Binance, etc.) and transfer it to your Phantom wallet.</p>
+    <div class="htb-cta">
+      <a href="https://moonshot.money/5akP3jinnufMVoWWjUfiwm2BinjycYkivbGQnNLNmoon?ref=S5bDQf" target="_blank" class="btn btn-moon" style="font-size:11px;padding:18px 36px;">
+        🌕 Buy $MOUSE on Moonshot Now
+      </a>
     </div>
-    <div class="step-card">
-      <div class="step-num">3</div>
-      <div class="step-title">Open Moonshot</div>
-      <p class="step-body">Head to the $MOUSE page on Moonshot using the link below. Connect your Phantom wallet.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-num">4</div>
-      <div class="step-title">Buy & Hold 🧀</div>
-      <p class="step-body">Swap SOL for $MOUSE, confirm the tx, and welcome to the community. To the moon! 🌙</p>
-    </div>
-  </div>
-
-  <div class="moonshot-banner">
-    <h3>Ready to Hunt the Moon? 🌙</h3>
-    <p>Trade $MOUSE directly on Moonshot — no DEX experience needed.</p>
-    <a href="https://moonshot.com/5akP3jinnufMVoWWjUfiwm2BinjycYkivbGQnNLNmoon?ref=S5bDQf" target="_blank" class="btn btn-gold">🚀 Buy $MOUSE on Moonshot</a>
-  </div>
-</section>
-
-<!-- COMMUNITY -->
-
-<section class="community-section" id="community">
-  <p class="section-tag">// 004 — Community</p>
-  <h2 class="section-title" style="font-family:var(--font-display); font-size:clamp(2.5rem,5vw,4rem);">Join the<br><span style="color:var(--cheese);">Mouse Gang 🐭</span></h2>
-  <p style="color:var(--muted); font-size:1rem; font-weight:600; max-width:400px; margin:0 auto;">
-    The cheese is better when shared. Join the community and be part of something big.
-  </p>
-
-  <div class="community-links">
-    <a href="https://t.me/+WKsBqbbkEeEwZGRh" target="_blank" class="community-card">
-      <span class="community-icon">✈️</span> Telegram
-    </a>
-    <a href="https://moonshot.com/5akP3jinnufMVoWWjUfiwm2BinjycYkivbGQnNLNmoon?ref=S5bDQf" target="_blank" class="community-card">
-      <span class="community-icon">🚀</span> Moonshot
-    </a>
-  </div>
-
-  <div class="ca-box" style="margin-top:3rem;">
-    <span class="ca-label">Contract Address</span>
-    <span class="ca-text" id="caText2">5akP3jinnufMVoWWjUfiwm2BinjycYkivbGQnNLNmoon</span>
-    <button class="copy-btn" onclick="copyCA()">COPY</button>
   </div>
 </section>
 
-<!-- FOOTER -->
+<!-- ===== COMMUNITY ===== -->
+
+<section class="section" id="community">
+  <div class="section-inner">
+    <div class="sec-title">🌐 Join The Community</div>
+    <div class="links-grid">
+      <a href="https://moonshot.money/5akP3jinnufMVoWWjUfiwm2BinjycYkivbGQnNLNmoon?ref=S5bDQf" target="_blank" class="link-card">
+        <div class="link-icon">🌕</div>
+        <div class="link-name">Moonshot</div>
+        <div class="link-sub">Buy $MOUSE here</div>
+      </a>
+      <a href="https://t.me/+WKsBqbbkEeEwZGRh" target="_blank" class="link-card">
+        <div class="link-icon">✈️</div>
+        <div class="link-name">Telegram Group</div>
+        <div class="link-sub">Join the community</div>
+      </a>
+      <a href="https://t.me/c/3429919451/90" target="_blank" class="link-card">
+        <div class="link-icon">📣</div>
+        <div class="link-name">TG Channel</div>
+        <div class="link-sub">Official announcements</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
 
 <footer>
-  <div class="footer-logo">🐭 $MOUSE</div>
-  <div style="color:var(--muted); font-size:0.85rem; font-weight:600;">Hunt the moon. Eat the cheese.</div>
-  <p class="footer-disclaimer">
-    $MOUSE is a meme token created for entertainment purposes. It has no intrinsic value and there is no expectation of financial return. This is not financial advice. Crypto and meme coins are highly speculative and volatile. Never invest more than you can afford to lose. DYOR. 🧀
-  </p>
+  <span class="footer-logo">🐭 $MOUSE 🌕</span>
+  <div class="footer-links-row">
+    <a href="https://moonshot.money/5akP3jinnufMVoWWjUfiwm2BinjycYkivbGQnNLNmoon?ref=S5bDQf" target="_blank">🌕 Moonshot</a>
+    <a href="https://t.me/+WKsBqbbkEeEwZGRh" target="_blank">✈ Telegram</a>
+    <a href="https://t.me/c/3429919451/90" target="_blank">📣 Channel</a>
+  </div>
+  <div class="footer-disc">
+    $MOUSE is a meme coin with no intrinsic value or expectation of financial return.
+    Not financial advice. Always DYOR. Never invest more than you can afford to lose. NFA. 🐭
+  </div>
+  <div class="footer-copy">© 2025 $MOUSE · BUILT ON SOLANA · ALL RIGHTS RESERVED</div>
 </footer>
 
-<script>
-  const CA = '5akP3jinnufMVoWWjUfiwm2BinjycYkivbGQnNLNmoon';
+</div>
 
-  function copyCA() {
-    navigator.clipboard.writeText(CA).then(() => {
-      document.querySelectorAll('.copy-btn').forEach(btn => {
-        btn.textContent = '✓ COPIED!';
-        btn.style.background = 'rgba(74,222,128,0.2)';
-        btn.style.borderColor = 'rgba(74,222,128,0.5)';
-        btn.style.color = '#4ade80';
-        setTimeout(() => {
-          btn.textContent = 'COPY';
-          btn.style.background = '';
-          btn.style.borderColor = '';
-          btn.style.color = '';
-        }, 2000);
-      });
-    });
+<script>
+/* STARFIELD */
+(function(){
+  const c = document.getElementById('starfield');
+  const ctx = c.getContext('2d');
+  let W, H, stars = [];
+
+  function resize(){
+    W = c.width = window.innerWidth;
+    H = c.height = window.innerHeight;
   }
 
-  // Make CA text clickable too
-  document.querySelectorAll('.ca-text').forEach(el => {
-    el.addEventListener('click', copyCA);
-    el.title = 'Click to copy';
-  });
+  function populate(){
+    stars = [];
+    for(let i=0;i<220;i++){
+      stars.push({
+        x: Math.random()*W,
+        y: Math.random()*H,
+        r: Math.random()*1.6+0.2,
+        speed: Math.random()*0.007+0.002,
+        phase: Math.random()*Math.PI*2
+      });
+    }
+  }
 
-  // Animate bars on scroll
-  const bars = document.querySelectorAll('.dist-bar-fill');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) e.target.style.animationPlayState = 'running';
+  function draw(t){
+    ctx.clearRect(0,0,W,H);
+    stars.forEach(s=>{
+      const a = 0.25 + 0.75*Math.abs(Math.sin(t*s.speed + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fillStyle = rgba(255,255,255,${a});
+      ctx.fill();
     });
-  }, { threshold: 0.3 });
-  bars.forEach(b => {
-    b.style.animationPlayState = 'paused';
-    observer.observe(b);
-  });
+    requestAnimationFrame(draw);
+  }
 
-  // Subtle parallax on glow blobs
-  document.addEventListener('mousemove', e => {
-    const x = (e.clientX / window.innerWidth - 0.5) * 30;
-    const y = (e.clientY / window.innerHeight - 0.5) * 30;
-    document.querySelector('.blob1').style.transform = translate(${x}px, ${y}px);
-    document.querySelector('.blob2').style.transform = translate(${-x}px, ${-y}px);
+  resize(); populate();
+  window.addEventListener('resize', ()=>{ resize(); populate(); });
+  requestAnimationFrame(draw);
+})();
+
+/* COPY CA */
+const CA = '5akP3jinnufMVoWWjUfiwm2BinjycYkivbGQnNLNmoon';
+function copyCA(id){
+  navigator.clipboard.writeText(CA).then(()=>{
+    const btn = document.getElementById(id);
+    const orig = btn.textContent;
+    btn.textContent = '✅ Copied!';
+    btn.classList.add('ok');
+    setTimeout(()=>{ btn.textContent = orig; btn.classList.remove('ok'); }, 2500);
   });
+}
+
+/* SCROLL REVEAL */
+const revEls = document.querySelectorAll('.reveal');
+setTimeout(()=>{
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach((e,i)=>{
+      if(e.isIntersecting){
+        setTimeout(()=>e.target.classList.add('in'), i*60);
+        obs.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.05, rootMargin:'0px 0px -30px 0px'});
+  revEls.forEach(el=>{
+    const rect = el.getBoundingClientRect();
+    const inView = rect.top < window.innerHeight && rect.bottom > 0;
+    if(!inView){ el.classList.add('animate-ready'); obs.observe(el); }
+  });
+}, 150);
+
+/* DESKTOP PARALLAX MOON */
+if(window.innerWidth > 768){
+  document.addEventListener('mousemove', e=>{
+    const orb = document.querySelector('.moon-orb');
+    if(!orb) return;
+    const x = (e.clientX/window.innerWidth  - 0.5)*22;
+    const y = (e.clientY/window.innerHeight - 0.5)*14;
+    orb.style.transform = translate(${x}px,${y}px);
+  });
+}
 </script>
 
 </body>
